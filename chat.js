@@ -1,10 +1,10 @@
 console.log("app.js");
 
-let OPENAI_API_KEY;
+// let OPENAI_API_KEY;
 let currentUser = {};
 
 let domain = "http://localhost:4600/";
-domain = "https://hg-backend.onrender.com/";
+// domain = "https://hg-backend.onrender.com/";
 
 if (localStorage.getItem("heyGPT_currentUser")) {
   currentUser = JSON.parse(localStorage.getItem("heyGPT_currentUser"));
@@ -68,26 +68,40 @@ async function heyGPT(e) {
       .css("display", "block")
       .show();
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gpt-4o",
-        messages: [
-          ...conversationHistory,
-          { role: "user", content: $textPrompt.val() },
-        ],
-      }),
-    });
+    // const response = await fetch(
+    //   domain + "user-message/" + currentUser.username,
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({
+    //       message: $textPrompt.val(),
+    //     }),
+    //   }
+    // );
+
+    // const resObject = await response.json();
+    // console.log(resObject);
+
+    const response = await fetch(
+      domain + "user-message/" + currentUser.username,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: $textPrompt.val(),
+          conversationHistory,
+        }),
+      }
+    );
 
     const resObject = await response.json();
     console.log(resObject);
-    const formattedResponse = marked.parse(
-      resObject.choices[0].message.content
-    );
+
+    const formattedResponse = marked.parse(resObject.response);
 
     const formattedUserMessage = marked
       .parse($textPrompt.val())
@@ -109,7 +123,7 @@ async function heyGPT(e) {
       },
       {
         role: "assistant",
-        content: resObject.choices[0].message.content,
+        content: resObject.response,
       }
     );
 
