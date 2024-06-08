@@ -1,0 +1,116 @@
+body {
+  background-color: black;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0% auto;
+  padding: 5vw;
+}
+
+button {
+  background-color: #3d406c;
+  font: menu;
+  /* font-weight: bold; */
+  color: white;
+  padding: 10px 20px;
+  margin: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+img {
+  max-height: 500px;
+  margin: 10px;
+}
+
+#chatWithGPT {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px;
+}
+
+#textPrompt {
+  width: 400px;
+}
+
+@keyframes flash {
+  0% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.status-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px 10px;
+  background-color: rgba(81, 77, 77, 0.8);
+  border-radius: 5%;
+  color: rgba(255, 255, 255, 0.9);
+  border-radius: 5%;
+  margin: 10px;
+  width: 150px;
+  height: 20px;
+}
+
+.status-box p {
+  margin: 0;
+}
+
+.loading-message {
+  animation: flash 2s infinite;
+}
+
+.user-message {
+  color: #cecbcb;
+  text-align: right;
+}
+
+.gpt-message {
+  text-align: left;
+}
+
+#chatLog {
+  display: flex;
+  flex-direction: column;
+  /* align-items: flex-end; */
+  width: 80vw;
+  height: 50vh;
+  overflow-y: scroll;
+  border: 1px solid white;
+  padding: 20px;
+}
+
+#chatLog::-webkit-scrollbar {
+  width: 10px;
+}
+
+#chatLog::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+#chatLog::-webkit-scrollbar-thumb:hover,
+#chatLog::-webkit-scrollbar-thumb:active,
+#chatLog::-webkit-scrollbar-thumb:window-inactive {
+  background: #555;
+}
+
+#chatLog::-webkit-scrollbar-track,
+#chatLog::-webkit-scrollbar-corner,
+#chatLog::-webkit-scrollbar-button,
+#chatLog::-webkit-scrollbar-button:hover,
+#chatLog::-webkit-scrollbar-button:active {
+  background: #f1f1f1;
+}

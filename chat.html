@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hey, GPT!</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script defer src="chat.js"></script>
+</head>
+
+<body>
+  <section style="display: flex;">
+    <button id="check-btn">Poke!</button>
+    <span class="status-box">
+      <p id="connected-status"></p>
+    </span>
+  </section><br />
+
+  <form id="chatWithGPT">
+    <textarea id="textPrompt" placeholder="Chat with GPT..." style="width: 750px"></textarea><br />
+    <button>Submit</button>
+  </form>
+
+  <div id="chatLog"></div>
+  <button id="exportToFile">Export to File</button>
+  <button id="clearChatLog">Clear Chat Log</button>
+
+  <p id="loadingIndicator" style="display: none;"></p>
+
+</body>
+
+</html>
