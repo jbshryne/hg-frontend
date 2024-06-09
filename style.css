@@ -25,6 +25,13 @@ img {
   margin: 10px;
 }
 
+textarea {
+  width: 80vw;
+  height: 100px;
+  padding: 10px;
+  margin: 10px;
+}
+
 #chatWithGPT {
   display: flex;
   flex-direction: column;
