@@ -5,12 +5,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign in</title>
+  <link rel="stylesheet" href="normalize.css">
+  <link rel="stylesheet" href="skeleton.css">
   <link rel="stylesheet" href="style.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
   <script src="login.js" defer></script>
 </head>
 
 <body>
+  <section style="display: flex;">
+    <button id="check-btn">Poke!</button>
+    <span class="status-box">
+      <p id="connected-status"></p>
+    </span>
+  </section><br />
+
   <form id="loginForm">
     <input type="text" id="username" placeholder="Username" required><br />
     <input type="password" id="password" placeholder="Password" required><br />
