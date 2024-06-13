@@ -1,46 +1,46 @@
 body {
   background-color: black;
   color: white;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 0% auto;
+  /* display: flex; */
+  /* flex-direction: column; */
+  /* align-items: center; */
+  /* margin: 0% auto; */
   padding: 5vw;
 }
 
 button {
   background-color: #3d406c;
-  font: menu;
-  /* font-weight: bold; */
   color: white;
-  padding: 10px 20px;
   margin: 10px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  outline: none;
 }
 
+/* 
 img {
   max-height: 500px;
   margin: 10px;
-}
+} */
 
 textarea {
-  /* width: 800vw; */
-  height: 100px;
-  padding: 10px;
-  margin: 10px;
+  color: #000;
 }
 
-#chatWithGPT {
+/* #chatWithGPT {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: 10px;
-}
+} */
 
 #textPrompt {
-  width: 400px;
+  resize: none; /* Disable user resizing */
+  width: 100%; /* Make sure the width is responsive */
+  max-height: 200px; /* Set a maximum height */
+  overflow: hidden; /* Hide the overflow content */
+  box-sizing: border-box;
 }
 
 @keyframes flash {
@@ -62,19 +62,19 @@ textarea {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 5px 10px;
   background-color: rgba(81, 77, 77, 0.8);
   border-radius: 5%;
   color: rgba(255, 255, 255, 0.9);
   border-radius: 5%;
+  padding: 5px 10px;
   margin: 10px;
   width: 150px;
-  height: 20px;
+  height: 30px;
 }
 
-.status-box p {
+/* .status-box p {
   margin: 0;
-}
+} */
 
 .loading-message {
   animation: flash 2s infinite;
@@ -92,8 +92,7 @@ textarea {
 #chatLog {
   display: flex;
   flex-direction: column;
-  /* align-items: flex-end; */
-  width: 80vw;
+  /* width: 80vw; */
   height: 50vh;
   overflow-y: scroll;
   border: 1px solid white;

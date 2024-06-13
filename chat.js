@@ -68,22 +68,6 @@ async function heyGPT(e) {
       .css("display", "block")
       .show();
 
-    // const response = await fetch(
-    //   domain + "user-message/" + currentUser.username,
-    //   {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({
-    //       message: $textPrompt.val(),
-    //     }),
-    //   }
-    // );
-
-    // const resObject = await response.json();
-    // console.log(resObject);
-
     const response = await fetch(
       domain + "user-message/" + currentUser.username,
       {
@@ -135,7 +119,7 @@ async function heyGPT(e) {
     );
   } catch (error) {
     $loadingIndicator
-      .html(`Something went wrong. Please try again.`)
+      .html(`Something went wrong`)
       .removeClass("loading-message")
       .show();
 
@@ -145,7 +129,22 @@ async function heyGPT(e) {
 
 $("#chatWithGPT").off().on("submit", heyGPT);
 
+$textPrompt.on("input", function () {
+  $(this).css("height", "auto"); // Reset the height to auto
+  var newHeight = this.scrollHeight <= 200 ? this.scrollHeight : 200;
+  $(this).css("height", newHeight + "px"); // Set it to the scroll height, with a max of 200px
+
+  if (newHeight < 200) {
+    $(this).css("overflow", "hidden");
+  } else {
+    $(this).css("overflow", "auto"); // Add scrollbar when height exceeds 200px
+  }
+});
+
 function clearChat() {
+  const confirmation = confirm("Are you sure you want to clear the chat log?");
+  if (!confirmation) return;
+
   $chatLog.html("");
   conversationHistory = [];
 }
@@ -169,6 +168,9 @@ function exportToFile() {
     "Enter a file name to save the conversation",
     "conversation"
   );
+
+  if (!fileName) return;
+
   link.download = fileName + ".txt";
   link.click();
 }

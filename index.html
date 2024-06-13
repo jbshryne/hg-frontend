@@ -13,17 +13,26 @@
 </head>
 
 <body>
-  <section style="display: flex;">
-    <button id="check-btn">Poke!</button>
-    <span class="status-box">
-      <p id="connected-status"></p>
-    </span>
-  </section><br />
+  <div class="row">
+    <div class="column u-full-width" style="display: flex; justify-content: center;">
+      <button id="check-btn">Poke!</button>
+      <span class="status-box">
+        <p id="connected-status"></p>
+      </span>
+    </div>
+  </div>
+  <br />
 
   <form id="loginForm">
-    <input type="text" id="username" placeholder="Username" required><br />
-    <input type="password" id="password" placeholder="Password" required><br />
-    <button>Sign in</button>
+    <div class="row" style="display: flex; justify-content: center;">
+      <input type="text" id="username" placeholder="Username" required><br />
+    </div>
+    <div class="row" style="display: flex; justify-content: center;">
+      <input type="password" id="password" placeholder="Password" required><br />
+    </div>
+    <div class="row" style="display: flex; justify-content: center;">
+      <button>Sign in</button>
+    </div>
   </form>
 
   <p id="loadingIndicator" style="display: none;"></p>

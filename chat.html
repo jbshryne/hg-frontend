@@ -7,7 +7,6 @@
   <title>Hey, GPT!</title>
   <link rel="stylesheet" href="normalize.css">
   <link rel="stylesheet" href="skeleton.css">
-
   <link rel="stylesheet" href="style.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -15,24 +14,44 @@
 </head>
 
 <body>
-  <section style="display: flex;">
-    <button id="check-btn">Poke!</button>
-    <span class="status-box">
-      <p id="connected-status"></p>
-    </span>
-  </section><br />
+  <div class="container">
 
-  <form id="chatWithGPT">
-    <textarea id="textPrompt" placeholder="Chat with GPT..." style="width: 750px"></textarea><br />
-    <button>Submit</button>
-  </form>
+    <div class="row">
+      <div class="column u-full-width" style="display: flex; justify-content: center;">
+        <button id="check-btn">Poke!</button>
+        <span class="status-box">
+          <p id="connected-status"></p>
+        </span>
+      </div>
+    </div>
+    <br />
 
-  <div id="chatLog"></div>
-  <button id="exportToFile">Export to File</button>
-  <button id="clearChatLog">Clear Chat Log</button>
+    <form id="chatWithGPT">
+      <div class="row">
+        <textarea id="textPrompt" class="u-full-width" placeholder="Chat with GPT..."></textarea>
+      </div>
+      <div class="row">
+        <div class="column u-full-width" style="display: flex; justify-content: center;">
+          <button>Submit</button>
+          <span class="status-box">
+            <p id="loadingIndicator"></p>
+          </span>
+        </div>
+      </div>
+    </form>
 
-  <p id="loadingIndicator" style="display: none;"></p>
+    <div class="row">
+      <div id="chatLog"></div>
+    </div>
 
+    <div class="row">
+      <div class="column u-full-width" style="display: flex; justify-content: center;">
+        <button id="exportToFile">Export to File</button>
+        <button id="clearChatLog">Clear Chat Log</button>
+      </div>
+    </div>
+
+  </div>
 </body>
 
 </html>
