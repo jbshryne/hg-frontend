@@ -1,10 +1,10 @@
-console.log("app.js");
+console.log(DOMPurify.sanitize);
 
 // let OPENAI_API_KEY;
 let currentUser = {};
 
 let domain = "http://localhost:4600/";
-domain = "https://hg-backend.onrender.com/";
+// domain = "https://hg-backend.onrender.com/";
 
 if (localStorage.getItem("heyGPT_currentUser")) {
   currentUser = JSON.parse(localStorage.getItem("heyGPT_currentUser"));
@@ -77,7 +77,7 @@ async function heyGPT(e) {
         },
         body: JSON.stringify({
           message: $textPrompt.val(),
-          conversationHistory,
+          isNewConversation: conversationHistory.length <= 1,
         }),
       }
     );
@@ -85,29 +85,32 @@ async function heyGPT(e) {
     const resObject = await response.json();
     console.log(resObject);
 
-    const formattedResponse = marked.parse(resObject.response);
+    const parsedResponse = marked.parse(resObject.response);
+    const sanitizedResponse = DOMPurify.sanitize(parsedResponse);
 
+    const userInput = $textPrompt.val();
+    // const sanitizedUserMessage = DOMPurify.sanitize(userInput);
     const formattedUserMessage = marked
-      .parse($textPrompt.val())
+      .parse(userInput)
       .replace(/\<p\>/g, "")
       .replace(/\<\/p\>/g, "")
       .replace(/\</g, "&lt;");
 
     $chatLog.append(
       hLine,
-      `<div class="user-message"><b>${currentUser.username}</b><pre>
-      ${formattedUserMessage}</pre>
-      </div>`
+      `<div class="user-message"><b>${
+        currentUser.displayName || "User"
+      }</b><pre>${formattedUserMessage}</pre></div>`
     );
 
     conversationHistory.push(
       {
         role: "user",
-        content: $textPrompt.val(),
+        content: userInput,
       },
       {
         role: "assistant",
-        content: resObject.response,
+        content: sanitizedResponse,
       }
     );
 
@@ -115,7 +118,7 @@ async function heyGPT(e) {
     $textPrompt.val("");
 
     $chatLog.append(
-      `<p class="gpt-message"><b>Asst</b>${formattedResponse}</p>`
+      `<p class="gpt-message"><b>GPT</b><div>${sanitizedResponse}</div></p>`
     );
   } catch (error) {
     $loadingIndicator

@@ -471,7 +471,8 @@ select,
 fieldset {
   margin-bottom: 1.5rem;
 }
-pre,
+
+/* pre, */
 blockquote,
 dl,
 figure,

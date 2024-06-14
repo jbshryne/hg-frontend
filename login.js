@@ -1,7 +1,7 @@
 console.log("login.js loaded");
 
 let domain = "http://localhost:4600/";
-domain = "https://hg-backend.onrender.com/";
+// domain = "https://hg-backend.onrender.com/";
 
 let $loginForm = $("#loginForm");
 let $checkButton = $("#check-btn");
