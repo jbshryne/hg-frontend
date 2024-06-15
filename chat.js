@@ -1,6 +1,3 @@
-console.log(DOMPurify.sanitize);
-
-// let OPENAI_API_KEY;
 let currentUser = {};
 
 let domain = "http://localhost:4600/";
@@ -8,13 +5,15 @@ domain = "https://hg-backend.onrender.com/";
 
 if (localStorage.getItem("heyGPT_currentUser")) {
   currentUser = JSON.parse(localStorage.getItem("heyGPT_currentUser"));
+} else {
+  window.location.href = "login.html";
 }
 
-let $chatLog = $("#chatLog");
-let $textPrompt = $("#textPrompt");
-let $loadingIndicator = $("#loadingIndicator");
-let $checkButton = $("#check-btn");
-let $connectedStatus = $("#connected-status");
+const $chatLog = $("#chatLog");
+const $textPrompt = $("#textPrompt");
+const $loadingIndicator = $(".loadingIndicator");
+const $checkButton = $("#check-btn");
+const $connectedStatus = $("#connected-status");
 
 $checkButton.on("click", async function () {
   $connectedStatus.text("Waking up server...").addClass("loading-message");
@@ -52,7 +51,7 @@ const getOpenAIKey = async () => {
 
 const hLine = "<hr style='width: 100%' />";
 
-let conversationHistory = [
+const conversationHistory = [
   { role: "system", content: "You are a helpful assistant." },
 ];
 
