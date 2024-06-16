@@ -72,11 +72,12 @@ textarea {
 }
 
 .user-message pre {
-  background-color: #2d2d2d;
+  /* background-color: #2d2d2d; */
   border-radius: 5px;
   padding: 10px;
   white-space: pre-wrap;
   word-wrap: break-word;
+  font-family: "Railway", sans-serif;
 }
 
 .gpt-message {

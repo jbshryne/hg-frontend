@@ -1,7 +1,7 @@
 let currentUser = {};
 
 let domain = "http://localhost:4600/";
-domain = "https://hg-backend.onrender.com/";
+// domain = "https://hg-backend.onrender.com/";
 
 if (localStorage.getItem("heyGPT_currentUser")) {
   currentUser = JSON.parse(localStorage.getItem("heyGPT_currentUser"));
@@ -88,12 +88,13 @@ async function heyGPT(e) {
     const sanitizedResponse = DOMPurify.sanitize(parsedResponse);
 
     const userInput = $textPrompt.val();
-    // const sanitizedUserMessage = DOMPurify.sanitize(userInput);
     const formattedUserMessage = marked
       .parse(userInput)
       .replace(/\<p\>/g, "")
       .replace(/\<\/p\>/g, "")
       .replace(/\</g, "&lt;");
+
+    // const sanitizedUserMessage = DOMPurify.sanitize(formattedUserMessage);
 
     $chatLog.append(
       hLine,
