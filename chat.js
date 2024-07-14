@@ -39,6 +39,16 @@ $(function () {
       }
     },
   });
+
+  $(document).click(function (event) {
+    var $target = $(event.target);
+    if (
+      !$target.closest("#accordion").length &&
+      $("#accordion").accordion("option", "active") !== false
+    ) {
+      $("#accordion").accordion("option", "active", false);
+    }
+  });
 });
 
 const getConversations = async () => {
@@ -59,7 +69,6 @@ const getConversations = async () => {
 };
 
 const getConversation = async (conversationId) => {
-  if (isLoading) return;
   if (conversationId === conversation_id) return;
 
   const response = await fetch(domain + "conversation/" + conversationId, {
@@ -152,7 +161,11 @@ const deleteConversation = async (conversationId) => {
   const resObject = await response.json();
   console.log("resObject: ", resObject);
 
-  window.location.reload();
+  if (conversation_id === conversationId) {
+    $chatLog.html("");
+    conversationHistory = [];
+    conversation_id = "";
+  }
 };
 
 const populateConversations = async (conversations) => {
@@ -163,6 +176,7 @@ const populateConversations = async (conversations) => {
       .data("id", conversation._id)
       .text(conversation.title || "New Conversation")
       .on("click", function () {
+        if (isLoading) return;
         getConversation(conversation._id);
       })
       .append(
