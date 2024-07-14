@@ -1,7 +1,7 @@
 let currentUser = {};
 
 let domain = "http://localhost:4600/";
-domain = "https://hg-backend.onrender.com/";
+// domain = "https://hg-backend.onrender.com/";
 
 if (localStorage.getItem("heyGPT_currentUser")) {
   currentUser = JSON.parse(localStorage.getItem("heyGPT_currentUser"));
@@ -14,9 +14,12 @@ const $textPrompt = $("#textPrompt");
 const $loadingIndicator = $(".loadingIndicator");
 const $checkButton = $("#check-btn");
 const $connectedStatus = $("#connected-status");
-const $conversations = $("#conversations");
+const $conversationList = $("#conversation-list");
+const $conversationTitle = $("#conversation-title");
 
 let isLoading = false;
+
+// let conversationTitle = "New Conversation";
 
 let conversationHistory = [
   { role: "system", content: "You are a helpful assistant." },
@@ -51,11 +54,13 @@ const getConversations = async () => {
 
   const resObject = await response.json();
   console.log("resObject: ", resObject);
+
   return resObject.conversations;
 };
 
 const getConversation = async (conversationId) => {
   if (isLoading) return;
+  if (conversationId === conversation_id) return;
 
   const response = await fetch(domain + "conversation/" + conversationId, {
     method: "GET",
@@ -87,12 +92,56 @@ const getConversation = async (conversationId) => {
     }
   });
 
-  conversationHistory = resObject.conversation.messages;
+  $conversationTitle
+    .text(resObject.conversation.title || "New Conversation")
+    .off()
+    .on("click", function () {
+      editConversationTitle(conversationId, resObject.conversation.title);
+    });
+
   conversation_id = resObject.conversation._id;
-  console.log("conversationId: ", conversationId);
+  conversationHistory = resObject.conversation.messages;
+
+  // scroll to the top of the chat log
+  $chatLog.scrollTop(0);
+};
+
+// edit conversation title
+const editConversationTitle = async (conversationId, currentTitle) => {
+  const newTitle = prompt(
+    "Enter a new title for the conversation",
+    currentTitle
+  );
+
+  if (!newTitle) return;
+
+  const response = await fetch(domain + "conversation/" + conversationId, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      title: newTitle,
+    }),
+  });
+
+  const resObject = await response.json();
+  console.log("resObject: ", resObject);
+
+  getConversations().then((conversations) => {
+    populateConversations(conversations);
+  });
+
+  $conversationTitle.text(newTitle);
 };
 
 const deleteConversation = async (conversationId) => {
+  const confirmation = confirm(
+    "Are you sure you want to delete this conversation?"
+  );
+
+  if (!confirmation) return;
+
   const response = await fetch(domain + "conversation/" + conversationId, {
     method: "DELETE",
     headers: {
@@ -106,8 +155,8 @@ const deleteConversation = async (conversationId) => {
   window.location.reload();
 };
 
-getConversations().then((conversations) => {
-  console.log("conversations: ", conversations);
+const populateConversations = async (conversations) => {
+  $("#conversation-list").html("");
 
   conversations.forEach((conversation) => {
     $("<li></li>")
@@ -125,6 +174,10 @@ getConversations().then((conversations) => {
       )
       .prependTo($("#conversation-list"));
   });
+};
+
+getConversations().then((conversations) => {
+  populateConversations(conversations);
 });
 
 $checkButton.on("click", async function () {
@@ -227,12 +280,15 @@ async function heyGPT(e) {
       }
     );
 
-    conversationId = resObject._id;
+    // conversationTitle = resObject.title;
+    conversation_id = resObject._id;
 
-    // conversationHistory.unshift({
-    //   role: "system",
-    //   title: resObject.title,
-    // });
+    $conversationTitle
+      .text(resObject.title || "New Conversation")
+      .off()
+      .on("click", function () {
+        editConversationTitle(conversationId, resObject.title);
+      });
 
     $loadingIndicator.hide();
     $textPrompt.val("");

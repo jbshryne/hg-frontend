@@ -28,7 +28,7 @@ textarea {
   /* top: 10%; */
   left: 2%;
   padding: 10px;
-  background-color: rgba(81, 77, 77, 0.8);
+  background-color: rgba(80, 75, 121, 0.8);
   border-radius: 10px;
 }
 
@@ -45,6 +45,13 @@ textarea {
   letter-spacing: 0.1rem;
   text-transform: uppercase;
   align-self: flex-start;
+}
+
+#conversation-title {
+  height: 48px;
+  min-height: fit-content;
+  overflow-y: visible;
+  cursor: pointer;
 }
 
 #conversations {
@@ -74,7 +81,7 @@ textarea {
   position: absolute;
   top: -10px;
   right: -10px;
-  background-color: #3d406c;
+  background-color: rgba(81, 77, 77);
   color: white;
   padding: 0 10px;
   margin-left: 0px;
