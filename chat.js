@@ -1,7 +1,7 @@
 let currentUser = {};
 
 let domain = "http://localhost:4600/";
-domain = "https://hg-backend.onrender.com/";
+// domain = "https://hg-backend.onrender.com/";
 
 if (localStorage.getItem("heyGPT_currentUser")) {
   currentUser = JSON.parse(localStorage.getItem("heyGPT_currentUser"));
@@ -14,6 +14,118 @@ const $textPrompt = $("#textPrompt");
 const $loadingIndicator = $(".loadingIndicator");
 const $checkButton = $("#check-btn");
 const $connectedStatus = $("#connected-status");
+const $conversations = $("#conversations");
+
+let isLoading = false;
+
+let conversationHistory = [
+  { role: "system", content: "You are a helpful assistant." },
+];
+
+let conversation_id = "";
+
+$(function () {
+  $("#accordion").accordion({
+    collapsible: true,
+    active: false,
+    activate: function (event, ui) {
+      if (ui.newHeader.length) {
+        $("#conversations").show();
+      } else {
+        $("#conversations").hide();
+      }
+    },
+  });
+});
+
+const getConversations = async () => {
+  const response = await fetch(
+    domain + "conversations/" + currentUser.username,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  const resObject = await response.json();
+  console.log("resObject: ", resObject);
+  return resObject.conversations;
+};
+
+const getConversation = async (conversationId) => {
+  if (isLoading) return;
+
+  const response = await fetch(domain + "conversation/" + conversationId, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const resObject = await response.json();
+
+  console.log("resObject: ", resObject);
+
+  $chatLog.html("");
+
+  resObject.conversation.messages.forEach((message) => {
+    const formattedMessage = marked.parse(message.content);
+    const sanitizedMessage = DOMPurify.sanitize(formattedMessage);
+
+    if (message.role === "user") {
+      $chatLog.append(
+        `<div class="user-message"><b>${
+          currentUser.displayName || "User"
+        }</b><pre>${sanitizedMessage}</pre></div>`
+      );
+    } else if (message.role === "assistant") {
+      $chatLog.append(
+        `<p class="gpt-message"><b>GPT</b><div>${sanitizedMessage}</div></p>`
+      );
+    }
+  });
+
+  conversationHistory = resObject.conversation.messages;
+  conversation_id = resObject.conversation._id;
+  console.log("conversationId: ", conversationId);
+};
+
+const deleteConversation = async (conversationId) => {
+  const response = await fetch(domain + "conversation/" + conversationId, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const resObject = await response.json();
+  console.log("resObject: ", resObject);
+
+  window.location.reload();
+};
+
+getConversations().then((conversations) => {
+  console.log("conversations: ", conversations);
+
+  conversations.forEach((conversation) => {
+    $("<li></li>")
+      .data("id", conversation._id)
+      .text(conversation.title || "New Conversation")
+      .on("click", function () {
+        getConversation(conversation._id);
+      })
+      .append(
+        $('<button class="delete-btn">X</button>').on("click", function (e) {
+          e.stopPropagation();
+          e.preventDefault();
+          deleteConversation(conversation._id);
+        })
+      )
+      .prependTo($("#conversation-list"));
+  });
+});
 
 $checkButton.on("click", async function () {
   $connectedStatus.text("Waking up server...").addClass("loading-message");
@@ -51,21 +163,23 @@ const getOpenAIKey = async () => {
 
 const hLine = "<hr style='width: 100%' />";
 
-const conversationHistory = [
-  { role: "system", content: "You are a helpful assistant." },
-];
-
 async function heyGPT(e) {
   e.preventDefault();
 
   if ($textPrompt.val() === "") return;
 
   try {
+    isLoading = true;
+
     $loadingIndicator
       .html(`Loading ...`)
       .addClass("loading-message")
       .css("display", "block")
       .show();
+
+    // if (conversationHistory.length >= 1) {
+    //   // set the conversationId to the most recent conversation
+    // }
 
     const response = await fetch(
       domain + "user-message/" + currentUser.username,
@@ -75,6 +189,7 @@ async function heyGPT(e) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          conversationId: conversation_id,
           message: $textPrompt.val(),
           isNewConversation: conversationHistory.length <= 1,
         }),
@@ -94,8 +209,6 @@ async function heyGPT(e) {
       .replace(/\<\/p\>/g, "")
       .replace(/\</g, "&lt;");
 
-    // const sanitizedUserMessage = DOMPurify.sanitize(formattedUserMessage);
-
     $chatLog.append(
       hLine,
       `<div class="user-message"><b>${
@@ -114,8 +227,17 @@ async function heyGPT(e) {
       }
     );
 
+    conversationId = resObject._id;
+
+    // conversationHistory.unshift({
+    //   role: "system",
+    //   title: resObject.title,
+    // });
+
     $loadingIndicator.hide();
     $textPrompt.val("");
+
+    isLoading = false;
 
     $chatLog.append(
       `<p class="gpt-message"><b>GPT</b><div>${sanitizedResponse}</div></p>`
@@ -125,6 +247,8 @@ async function heyGPT(e) {
       .html(`Something went wrong`)
       .removeClass("loading-message")
       .show();
+
+    isLoading = false;
 
     console.log(error);
   }
@@ -156,13 +280,15 @@ document.getElementById("clearChatLog").addEventListener("click", clearChat);
 
 function exportToFile() {
   const conversationText = conversationHistory
-    .map(
-      (message) =>
-        `${message.role.charAt(0).toUpperCase() + message.role.slice(1)}: ${
-          message.content
-        }`
-    )
+    .map((message) => {
+      `${message.role.charAt(0).toUpperCase() + message.role.slice(1)}: ${
+        message.content
+      }`;
+    })
     .join("\n");
+
+  console.log("conversationHistory:", conversationHistory);
+  console.log("conversationText:", conversationText);
 
   const blob = new Blob([conversationText], { type: "text/plain" });
   const link = document.createElement("a");
