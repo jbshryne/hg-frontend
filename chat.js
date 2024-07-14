@@ -1,7 +1,7 @@
 let currentUser = {};
 
 let domain = "http://localhost:4600/";
-// domain = "https://hg-backend.onrender.com/";
+domain = "https://hg-backend.onrender.com/";
 
 if (localStorage.getItem("heyGPT_currentUser")) {
   currentUser = JSON.parse(localStorage.getItem("heyGPT_currentUser"));
