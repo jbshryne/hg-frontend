@@ -48,12 +48,12 @@ $loginForm.on("submit", async function (e) {
       localStorage.setItem("heyGPT_currentUser", JSON.stringify(data.user));
       window.location.href = "chat.html";
     } else {
-      $loadingIndicator.text("Error logging in").removeClass("loading");
+      $loadingIndicator.text("Error logging in").removeClass("loading-message");
       alert(data.message);
     }
   } catch (err) {
     console.error(err);
-    $loadingIndicator.text("Error logging in").removeClass("loading");
+    $loadingIndicator.text("Error logging in").removeClass("loading-message");
     alert("An error occurred. Please try again.");
   }
 });

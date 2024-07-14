@@ -19,8 +19,6 @@ const $conversationTitle = $("#conversation-title");
 
 let isLoading = false;
 
-// let conversationTitle = "New Conversation";
-
 let conversationHistory = [
   { role: "system", content: "You are a helpful assistant." },
 ];
@@ -47,6 +45,7 @@ $(function () {
       $("#accordion").accordion("option", "active") !== false
     ) {
       $("#accordion").accordion("option", "active", false);
+      console.log("click outside");
     }
   });
 });
