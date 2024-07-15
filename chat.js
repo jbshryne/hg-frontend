@@ -49,7 +49,7 @@ $(function () {
     }
   });
 });
-
+// get all conversations
 const getConversations = async () => {
   const response = await fetch(
     domain + "conversations/" + currentUser.username,
@@ -66,7 +66,7 @@ const getConversations = async () => {
 
   return resObject.conversations;
 };
-
+// get a single conversation
 const getConversation = async (conversationId) => {
   if (conversationId === conversation_id) return;
 
@@ -114,6 +114,32 @@ const getConversation = async (conversationId) => {
   $chatLog.scrollTop(0);
 };
 
+const populateConversations = async (conversations) => {
+  $("#conversation-list").html("");
+
+  conversations.forEach((conversation) => {
+    $("<li></li>")
+      .data("id", conversation._id)
+      .text(conversation.title || "New Conversation")
+      .on("click", function () {
+        if (isLoading) return;
+        getConversation(conversation._id);
+      })
+      .append(
+        $('<button class="delete-btn">X</button>').on("click", function (e) {
+          e.stopPropagation();
+          e.preventDefault();
+          deleteConversation(conversation._id);
+        })
+      )
+      .prependTo($("#conversation-list"));
+  });
+};
+
+getConversations().then((conversations) => {
+  populateConversations(conversations);
+});
+
 // edit conversation title
 const editConversationTitle = async (conversationId, currentTitle) => {
   const newTitle = prompt(
@@ -143,6 +169,7 @@ const editConversationTitle = async (conversationId, currentTitle) => {
   $conversationTitle.text(newTitle);
 };
 
+// delete conversation
 const deleteConversation = async (conversationId) => {
   const confirmation = confirm(
     "Are you sure you want to delete this conversation?"
@@ -161,37 +188,16 @@ const deleteConversation = async (conversationId) => {
   console.log("resObject: ", resObject);
 
   if (conversation_id === conversationId) {
+    console.log("This conversation is currently displayed");
     $chatLog.html("");
-    conversationHistory = [];
+    $conversationTitle.text("");
     conversation_id = "";
+
+    getConversations().then((conversations) => {
+      populateConversations(conversations);
+    });
   }
 };
-
-const populateConversations = async (conversations) => {
-  $("#conversation-list").html("");
-
-  conversations.forEach((conversation) => {
-    $("<li></li>")
-      .data("id", conversation._id)
-      .text(conversation.title || "New Conversation")
-      .on("click", function () {
-        if (isLoading) return;
-        getConversation(conversation._id);
-      })
-      .append(
-        $('<button class="delete-btn">X</button>').on("click", function (e) {
-          e.stopPropagation();
-          e.preventDefault();
-          deleteConversation(conversation._id);
-        })
-      )
-      .prependTo($("#conversation-list"));
-  });
-};
-
-getConversations().then((conversations) => {
-  populateConversations(conversations);
-});
 
 $checkButton.on("click", async function () {
   $connectedStatus.text("Waking up server...").addClass("loading-message");
@@ -294,7 +300,9 @@ async function heyGPT(e) {
     );
 
     // conversationTitle = resObject.title;
-    conversation_id = resObject._id;
+    conversation_id = resObject.conversationId;
+
+    console.log("conversation_id: ", conversation_id);
 
     $conversationTitle
       .text(resObject.title || "New Conversation")
@@ -302,6 +310,10 @@ async function heyGPT(e) {
       .on("click", function () {
         editConversationTitle(conversationId, resObject.title);
       });
+
+    getConversations().then((conversations) => {
+      populateConversations(conversations);
+    });
 
     $loadingIndicator.hide();
     $textPrompt.val("");
@@ -337,15 +349,13 @@ $textPrompt.on("input", function () {
   }
 });
 
-function clearChat() {
-  const confirmation = confirm("Are you sure you want to clear the chat log?");
-  if (!confirmation) return;
-
+function newChat() {
   $chatLog.html("");
-  conversationHistory = [];
+  $conversationTitle.text("");
+  conversation_id = "";
 }
 
-document.getElementById("clearChatLog").addEventListener("click", clearChat);
+document.getElementById("newChatBtn").addEventListener("click", newChat);
 
 function exportToFile() {
   const conversationText = conversationHistory
@@ -363,8 +373,8 @@ function exportToFile() {
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
   const fileName = prompt(
-    "Enter a file name to save the conversation",
-    "conversation"
+    "Title your conversation file:",
+    $conversationTitle.text() || "conversation"
   );
 
   if (!fileName) return;
@@ -378,5 +388,5 @@ function downloadConversation() {
 }
 
 document
-  .getElementById("exportToFile")
+  .getElementById("exportBtn")
   .addEventListener("click", downloadConversation);
