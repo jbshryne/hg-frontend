@@ -200,7 +200,7 @@ const deleteConversation = async (conversationId) => {
 };
 
 $checkButton.on("click", async function () {
-  $connectedStatus.text("Waking up server...").addClass("loading-message");
+  $connectedStatus.text("Waking server...").addClass("loading-message");
   $("#check-btn-label").removeClass("loading-message");
 
   const response = await fetch(domain + "hi", {
