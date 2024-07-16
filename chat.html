@@ -33,42 +33,43 @@
     <br />
 
     <div class="row">
-      <div class="column u-full-width row-center">
-        <button id="check-btn">Poke server!</button>
-        <span class="status-box">
-          <p id="connected-status"></p>
-        </span>
-      </div>
-    </div>
-    <br />
-
-    <form id="chatWithGPT">
-      <div class="row">
-        <textarea id="textPrompt" class="u-full-width" placeholder="Chat with GPT..."></textarea>
-      </div>
-      <div class="row">
+      <div class="row" id="connection-widget">
         <div class="column u-full-width row-center">
-          <button>Submit</button>
+          <button id="check-btn"><span id="check-btn-label" class="loading-message">Poke server!</span></button>
           <span class="status-box">
-            <p class="loadingIndicator"></p>
+            <p id="connected-status"></p>
           </span>
         </div>
       </div>
-    </form>
+      <br />
 
-    <div class="row">
-      <h5 id="conversation-title"></h5>
-      <div id="chatLog"></div>
-    </div>
+      <form id="chatWithGPT">
+        <div class="row">
+          <textarea id="textPrompt" class="u-full-width" placeholder="Chat with GPT..."></textarea>
+        </div>
+        <div class="row">
+          <div class="column u-full-width row-center">
+            <button>Submit</button>
+            <span class="status-box">
+              <p class="loadingIndicator"></p>
+            </span>
+          </div>
+        </div>
+      </form>
 
-    <div class="row">
-      <div class="column u-full-width row-center">
-        <button id="exportBtn">Export to File</button>
-        <button id="newChatBtn">Start New Chat</button>
+      <div class="row">
+        <h5 id="conversation-title"></h5>
+        <div id="chatLog"></div>
       </div>
-    </div>
 
-  </div>
+      <div class="row">
+        <div class="column u-full-width row-center">
+          <button id="exportBtn">Export to File</button>
+          <button id="newChatBtn">Start New Chat</button>
+        </div>
+      </div>
+
+    </div>
 </body>
 
 </html>

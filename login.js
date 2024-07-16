@@ -8,6 +8,7 @@ const $loadingIndicator = $(".loadingIndicator");
 
 $checkButton.on("click", async function () {
   $connectedStatus.text("Waking up server...").addClass("loading-message");
+  $("#check-btn-label").removeClass("loading-message");
 
   const response = await fetch(domain + "hi", {
     method: "GET",
@@ -20,6 +21,12 @@ $checkButton.on("click", async function () {
   console.log(data);
   if (data.success) {
     $connectedStatus.text("Connected!").removeClass("loading-message");
+    $checkButton
+      .html("Hide widget")
+      .off("click")
+      .on("click", function () {
+        $("#connection-widget").hide();
+      });
   } else {
     $connectedStatus.text("Not connected").removeClass("loading-message");
   }
