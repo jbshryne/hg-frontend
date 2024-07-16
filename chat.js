@@ -367,11 +367,13 @@ document.getElementById("newChatBtn").addEventListener("click", newChat);
 function exportToFile() {
   const conversationText = conversationHistory
     .map((message) => {
-      `${message.role.charAt(0).toUpperCase() + message.role.slice(1)}: ${
-        message.content
-      }`;
+      if (message.role === "user") {
+        return `${currentUser.displayName || "User"}: ${message.content}`;
+      } else if (message.role === "assistant") {
+        return `GPT: ${message.content}`;
+      }
     })
-    .join("\n");
+    .join("\n\n");
 
   console.log("conversationHistory:", conversationHistory);
   console.log("conversationText:", conversationText);
