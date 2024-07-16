@@ -29,6 +29,7 @@ textarea {
   left: 2%;
   padding: 10px;
   background-color: rgba(80, 75, 121, 0.8);
+  /* color: #333; */
   border-radius: 10px;
 }
 
@@ -45,6 +46,10 @@ textarea {
   letter-spacing: 0.1rem;
   text-transform: uppercase;
   align-self: flex-start;
+}
+
+#conversation-label:hover {
+  color: #333;
 }
 
 #conversation-title {
@@ -68,6 +73,7 @@ textarea {
   list-style-type: none;
   padding: 0;
   list-style: none;
+  padding: 10px;
 }
 
 #conversation-list li {
@@ -77,17 +83,25 @@ textarea {
   position: relative;
 }
 
+#conversation-list li:hover {
+  color: #bdc5e3;
+}
+
 #conversation-list li .delete-btn {
   position: absolute;
   top: -10px;
   right: -10px;
-  background-color: rgba(81, 77, 77);
+  background-color: rgba(81, 77, 77, 0.528);
   color: white;
   padding: 0 10px;
   margin-left: 0px;
   border: none;
   cursor: pointer;
   outline: none;
+}
+
+#conversation-list li .delete-btn:hover {
+  background-color: rgba(81, 77, 77, 0.822);
 }
 
 .row-center {
@@ -136,7 +150,7 @@ textarea {
 }
 
 .user-message {
-  color: #cecbcb;
+  color: #bdc5e3;
   text-align: right;
 }
 
@@ -150,6 +164,7 @@ textarea {
 
 .gpt-message {
   text-align: left;
+  /* color: #e4d8fc; */
 }
 
 .gpt-message pre,
