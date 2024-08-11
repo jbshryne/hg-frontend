@@ -214,12 +214,12 @@ $checkButton.on("click", async function () {
   console.log(data);
   if (data.success) {
     $connectedStatus.text("Connected!").removeClass("loading-message");
-    $checkButton
-      .html("Hide widget")
-      .off("click")
-      .on("click", function () {
-        $("#connection-widget").hide();
-      });
+    // $checkButton
+    //   .html("Hide widget")
+    //   .off("click")
+    //   .on("click", function () {
+    //     $("#connection-widget").hide();
+    //   });
   } else {
     $connectedStatus.text("Not connected").removeClass("loading-message");
   }
