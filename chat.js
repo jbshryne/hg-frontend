@@ -1,6 +1,6 @@
 let currentUser = {};
 
-let domain = "http://localhost:4600/";
+// let domain = "http://localhost:4600/";
 domain = "https://hg-backend.onrender.com/";
 
 if (localStorage.getItem("heyGPT_currentUser")) {
@@ -11,6 +11,8 @@ if (localStorage.getItem("heyGPT_currentUser")) {
 
 const $chatLog = $("#chatLog");
 const $textPrompt = $("#textPrompt");
+const $modelSelect = $("#model-select");
+const $modelSelectTest = $("#model-select-test");
 const $loadingIndicator = $(".loadingIndicator");
 const $checkButton = $("#check-btn");
 const $connectedStatus = $("#connected-status");
@@ -247,6 +249,8 @@ async function heyGPT(e) {
 
   if ($textPrompt.val() === "") return;
 
+  console.log("modelSelect: ", $modelSelect.val());
+
   try {
     isLoading = true;
 
@@ -255,10 +259,6 @@ async function heyGPT(e) {
       .addClass("loading-message")
       .css("display", "block")
       .show();
-
-    // if (conversationHistory.length >= 1) {
-    //   // set the conversationId to the most recent conversation
-    // }
 
     const response = await fetch(
       domain + "user-message/" + currentUser.username,
@@ -269,6 +269,7 @@ async function heyGPT(e) {
         },
         body: JSON.stringify({
           conversationId: conversation_id,
+          model: $modelSelect.val(),
           message: $textPrompt.val(),
           isNewConversation: conversationHistory.length <= 1,
         }),

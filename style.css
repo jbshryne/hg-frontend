@@ -109,6 +109,10 @@ textarea {
   justify-content: center;
 }
 
+select {
+  color: black;
+}
+
 #textPrompt {
   resize: none;
   width: 100%;

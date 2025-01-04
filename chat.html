@@ -47,29 +47,41 @@
         <div class="row">
           <textarea id="textPrompt" class="u-full-width" placeholder="Chat with GPT..."></textarea>
         </div>
-        <div class="row">
-          <div class="column u-full-width row-center">
-            <button>Submit</button>
-            <span class="status-box">
-              <p class="loadingIndicator"></p>
-            </span>
-          </div>
+        <div class="row-center">
+          <label for="model-select">
+            Which model?
+            <select id="model-select" name="model-select">
+              Which model?
+              <option value="gpt-4o">GPT-4o</option>
+              <option value="o1-preview">o1 (preview)</option>
+              <option value="o1-mini">o1 (mini)</option>
+            </select>
+          </label>
         </div>
-      </form>
-
-      <div class="row">
-        <h5 id="conversation-title"></h5>
-        <div id="chatLog"></div>
-      </div>
-
-      <div class="row">
-        <div class="column u-full-width row-center">
-          <button id="exportBtn">Export to File</button>
-          <button id="newChatBtn">Start New Chat</button>
-        </div>
-      </div>
-
     </div>
+    <div class="row">
+      <div class="column u-full-width row-center">
+        <button>Submit</button>
+        <span class="status-box">
+          <p class="loadingIndicator"></p>
+        </span>
+      </div>
+    </div>
+    </form>
+
+    <div class="row">
+      <h5 id="conversation-title"></h5>
+      <div id="chatLog"></div>
+    </div>
+
+    <div class="row">
+      <div class="column u-full-width row-center">
+        <button id="exportBtn">Export to File</button>
+        <button id="newChatBtn">Start New Chat</button>
+      </div>
+    </div>
+
+  </div>
 </body>
 
 </html>
