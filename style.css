@@ -25,16 +25,13 @@ textarea {
   flex-direction: column;
   align-items: center;
   z-index: 100;
-  /* top: 10%; */
   left: 2%;
   padding: 10px;
   background-color: rgba(80, 75, 121, 0.8);
-  /* color: #333; */
   border-radius: 10px;
 }
 
 #conversation-label {
-  /* background-color: #3d406c; */
   cursor: pointer;
   color: white;
   padding: 5px;
@@ -119,6 +116,10 @@ select {
   max-height: 200px;
   overflow: hidden;
   box-sizing: border-box;
+}
+
+#image-input {
+  color: white;
 }
 
 @keyframes flash {

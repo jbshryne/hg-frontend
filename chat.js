@@ -12,6 +12,7 @@ if (localStorage.getItem("heyGPT_currentUser")) {
 const $chatLog = $("#chatLog");
 const $textPrompt = $("#textPrompt");
 const $modelSelect = $("#model-select");
+const $imageInput = $("#image-input");
 const $modelSelectTest = $("#model-select-test");
 const $loadingIndicator = $(".loadingIndicator");
 const $checkButton = $("#check-btn");
@@ -51,6 +52,7 @@ $(function () {
     }
   });
 });
+
 // get all conversations
 const getConversations = async () => {
   const response = await fetch(
@@ -64,10 +66,11 @@ const getConversations = async () => {
   );
 
   const resObject = await response.json();
-  console.log("resObject: ", resObject);
+  // console.log("resObject: ", resObject);
 
   return resObject.conversations;
 };
+
 // get a single conversation
 const getConversation = async (conversationId) => {
   if (conversationId === conversation_id) return;
@@ -244,21 +247,39 @@ const getOpenAIKey = async () => {
 
 const hLine = "<hr style='width: 100%' />";
 
-async function heyGPT(e) {
+$imageInput.on("input", function () {
+  const file = $imageInput[0].files[0];
+  const reader = new FileReader();
+  reader.onloadend = function () {
+    const base64data = reader.result;
+    console.log(base64data);
+  };
+  reader.readAsDataURL(file);
+});
+
+async function chatWithGPT(e) {
   e.preventDefault();
 
-  if ($textPrompt.val() === "") return;
+  if ($textPrompt.val().trim() === "") return;
 
   console.log("modelSelect: ", $modelSelect.val());
 
+  let imageUrl = "";
+  const image = $imageInput[0].files[0];
+
+  if (image) {
+    // Use a Promise to handle asynchronous reading
+    imageUrl = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(new Error("Failed to read the image"));
+      reader.readAsDataURL(image);
+    });
+  }
+
   try {
     isLoading = true;
-
-    $loadingIndicator
-      .html(`Loading ...`)
-      .addClass("loading-message")
-      .css("display", "block")
-      .show();
+    updateLoadingIndicator(true);
 
     const response = await fetch(
       domain + "user-message/" + currentUser.username,
@@ -271,79 +292,86 @@ async function heyGPT(e) {
           conversationId: conversation_id,
           model: $modelSelect.val(),
           message: $textPrompt.val(),
+          image: imageUrl,
           isNewConversation: conversationHistory.length <= 1,
         }),
       }
     );
 
     const resObject = await response.json();
-    console.log(resObject);
-
-    const parsedResponse = marked.parse(resObject.response);
-    const sanitizedResponse = DOMPurify.sanitize(parsedResponse);
-
-    const userInput = $textPrompt.val();
-    const formattedUserMessage = marked
-      .parse(userInput)
-      .replace(/\<p\>/g, "")
-      .replace(/\<\/p\>/g, "")
-      .replace(/\</g, "&lt;");
-
-    $chatLog.append(
-      hLine,
-      `<div class="user-message"><b>${
-        currentUser.displayName || "User"
-      }</b><pre>${formattedUserMessage}</pre></div>`
-    );
-
-    conversationHistory.push(
-      {
-        role: "user",
-        content: userInput,
-      },
-      {
-        role: "assistant",
-        content: sanitizedResponse,
-      }
-    );
-
-    // conversationTitle = resObject.title;
-    conversation_id = resObject.conversationId;
-
-    console.log("conversation_id: ", conversation_id);
-
-    $conversationTitle
-      .text(resObject.title || "New Conversation")
-      .off()
-      .on("click", function () {
-        editConversationTitle(conversationId, resObject.title);
-      });
-
-    getConversations().then((conversations) => {
-      populateConversations(conversations);
-    });
-
-    $loadingIndicator.hide();
-    $textPrompt.val("");
-
-    isLoading = false;
-
-    $chatLog.append(
-      `<p class="gpt-message"><b>GPT</b><div>${sanitizedResponse}</div></p>`
-    );
+    handleResponse(resObject);
   } catch (error) {
-    $loadingIndicator
-      .html(`Something went wrong`)
-      .removeClass("loading-message")
-      .show();
-
+    updateLoadingIndicator(false, true);
+    console.error("Error occurred during chat:", error);
+  } finally {
     isLoading = false;
-
-    console.log(error);
   }
 }
 
-$("#chatWithGPT").off().on("submit", heyGPT);
+function updateLoadingIndicator(isLoading, isError = false) {
+  if (isLoading) {
+    $loadingIndicator.html(`Loading ...`).addClass("loading-message").show();
+  } else {
+    $loadingIndicator
+      .html(isError ? `Something went wrong` : "")
+      .removeClass("loading-message")
+      .show();
+  }
+}
+
+function handleResponse(resObject) {
+  console.log(resObject);
+  const parsedResponse = marked.parse(resObject.response);
+  const sanitizedResponse = DOMPurify.sanitize(parsedResponse);
+
+  const userInput = $textPrompt.val();
+  const formattedUserMessage = marked
+    .parse(userInput)
+    .replace(/\<p\>/g, "")
+    .replace(/\<\/p\>/g, "")
+    .replace(/\</g, "&lt;");
+
+  $chatLog.append(
+    hLine,
+    `<div class="user-message"><b>${
+      currentUser.displayName || "User"
+    }</b><pre>${formattedUserMessage}</pre></div>`
+  );
+
+  conversationHistory.push(
+    {
+      role: "user",
+      content: userInput,
+    },
+    {
+      role: "assistant",
+      content: sanitizedResponse,
+    }
+  );
+
+  conversation_id = resObject.conversationId;
+
+  console.log("conversation_id: ", conversation_id);
+
+  $conversationTitle
+    .text(resObject.title || "New Conversation")
+    .off()
+    .on("click", function () {
+      editConversationTitle(conversationId, resObject.title);
+    });
+
+  getConversations().then(populateConversations);
+
+  updateLoadingIndicator(false);
+
+  $textPrompt.val("");
+
+  $chatLog.append(
+    `<p class="gpt-message"><b>GPT</b><div>${sanitizedResponse}</div></p>`
+  );
+}
+
+$("#chatWithGPT").off().on("submit", chatWithGPT);
 
 $textPrompt.on("input", function () {
   $(this).css("height", "auto"); // Reset the height to auto
