@@ -48,7 +48,6 @@ $(function () {
       $("#accordion").accordion("option", "active") !== false
     ) {
       $("#accordion").accordion("option", "active", false);
-      console.log("click outside");
     }
   });
 });
@@ -66,7 +65,6 @@ const getConversations = async () => {
   );
 
   const resObject = await response.json();
-  // console.log("resObject: ", resObject);
 
   return resObject.conversations;
 };
@@ -83,8 +81,6 @@ const getConversation = async (conversationId) => {
   });
 
   const resObject = await response.json();
-
-  console.log("resObject: ", resObject);
 
   $chatLog.html("");
 
@@ -165,7 +161,6 @@ const editConversationTitle = async (conversationId, currentTitle) => {
   });
 
   const resObject = await response.json();
-  console.log("resObject: ", resObject);
 
   getConversations().then((conversations) => {
     populateConversations(conversations);
@@ -190,10 +185,8 @@ const deleteConversation = async (conversationId) => {
   });
 
   const resObject = await response.json();
-  console.log("resObject: ", resObject);
 
   if (conversation_id === conversationId) {
-    console.log("This conversation is currently displayed");
     $chatLog.html("");
     $conversationTitle.text("");
     conversation_id = "";
@@ -216,7 +209,6 @@ $checkButton.on("click", async function () {
   });
 
   const data = await response.json();
-  console.log(data);
   if (data.success) {
     $connectedStatus.text("Connected!").removeClass("loading-message");
     // $checkButton
@@ -241,7 +233,6 @@ const getOpenAIKey = async () => {
     }
   );
   const resObject = await response.json();
-  console.log("resObject: ", resObject);
   return resObject.openai_key;
 };
 
@@ -261,8 +252,6 @@ async function chatWithGPT(e) {
   e.preventDefault();
 
   if ($textPrompt.val().trim() === "") return;
-
-  console.log("modelSelect: ", $modelSelect.val());
 
   let imageUrl = "";
   const image = $imageInput[0].files[0];
@@ -320,7 +309,6 @@ function updateLoadingIndicator(isLoading, isError = false) {
 }
 
 function handleResponse(resObject) {
-  console.log(resObject);
   const parsedResponse = marked.parse(resObject.response);
   const sanitizedResponse = DOMPurify.sanitize(parsedResponse);
 
@@ -350,8 +338,6 @@ function handleResponse(resObject) {
   );
 
   conversation_id = resObject.conversationId;
-
-  console.log("conversation_id: ", conversation_id);
 
   $conversationTitle
     .text(resObject.title || "New Conversation")
@@ -403,9 +389,6 @@ function exportToFile() {
       }
     })
     .join("\n\n");
-
-  console.log("conversationHistory:", conversationHistory);
-  console.log("conversationText:", conversationText);
 
   const blob = new Blob([conversationText], { type: "text/plain" });
   const link = document.createElement("a");
