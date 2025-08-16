@@ -12,7 +12,7 @@ if (localStorage.getItem("heyGPT_currentUser")) {
 const $chatLog = $("#chatLog");
 const $textPrompt = $("#textPrompt");
 const $modelSelect = $("#model-select");
-const $imageInput = $("#image-input");
+// const $imageInput = $("#image-input");
 const $modelSelectTest = $("#model-select-test");
 const $loadingIndicator = $(".loadingIndicator");
 const $checkButton = $("#check-btn");
@@ -238,33 +238,33 @@ const getOpenAIKey = async () => {
 
 const hLine = "<hr style='width: 100%' />";
 
-$imageInput.on("input", function () {
-  const file = $imageInput[0].files[0];
-  const reader = new FileReader();
-  reader.onloadend = function () {
-    const base64data = reader.result;
-    console.log(base64data);
-  };
-  reader.readAsDataURL(file);
-});
+// $imageInput.on("input", function () {
+//   const file = $imageInput[0].files[0];
+//   const reader = new FileReader();
+//   reader.onloadend = function () {
+//     const base64data = reader.result;
+//     console.log(base64data);
+//   };
+//   reader.readAsDataURL(file);
+// });
 
 async function chatWithGPT(e) {
   e.preventDefault();
 
   if ($textPrompt.val().trim() === "") return;
 
-  let imageUrl = "";
-  const image = $imageInput[0].files[0];
+  // let imageUrl = "";
+  // const image = $imageInput[0].files[0];
 
-  if (image) {
-    // Use a Promise to handle asynchronous reading
-    imageUrl = await new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = () => reject(new Error("Failed to read the image"));
-      reader.readAsDataURL(image);
-    });
-  }
+  // if (image) {
+  //   // Use a Promise to handle asynchronous reading
+  //   imageUrl = await new Promise((resolve, reject) => {
+  //     const reader = new FileReader();
+  //     reader.onload = () => resolve(reader.result);
+  //     reader.onerror = () => reject(new Error("Failed to read the image"));
+  //     reader.readAsDataURL(image);
+  //   });
+  // }
 
   try {
     isLoading = true;
@@ -281,7 +281,7 @@ async function chatWithGPT(e) {
           conversationId: conversation_id,
           model: $modelSelect.val(),
           message: $textPrompt.val(),
-          image: imageUrl,
+          // image: imageUrl,
           isNewConversation: conversationHistory.length <= 1,
         }),
       }
